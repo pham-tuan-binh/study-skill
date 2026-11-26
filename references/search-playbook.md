@@ -5,8 +5,8 @@ Run these as parallel subagents. Each one returns a compact ranked candidate lis
 ## Agent A: citation graph
 
 - Read the seed paper's related work and baselines.
-- Pull forward citations of the seed and the 2 or 3 most central papers from Semantic Scholar: `https://api.semanticscholar.org/graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds,abstract&limit=100&offset=0`. Page through the results and back off on HTTP 429.
-- Batch-fetch abstracts for the shortlist (`/paper/batch`, a POST with body `{"ids": [...]}`, not a GET with `?ids=`).
+- Pull forward citations of the seed and every central hub of the area (main benchmarks, most-cited datasets and systems), ranked by citation count. OpenAlex: `https://api.openalex.org/works?filter=cites:<openalex id>,from_publication_date:<YYYY-MM-DD>&sort=cited_by_count:desc&per-page=200&cursor=*`, then pass each response's `meta.next_cursor` as `cursor` until it is null (find the OpenAlex id with `https://api.openalex.org/works?search=<title>`). Semantic Scholar as a fallback: `https://api.semanticscholar.org/graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds,abstract&limit=100&offset=0`; page through all results and back off on HTTP 429. Never stop at the first page.
+- Batch-fetch abstracts for the shortlist (Semantic Scholar `/paper/batch` is a POST with body `{"ids": [...]}`, not a GET with `?ids=`).
 
 ## Agent B: keyword sweeps
 
@@ -18,6 +18,18 @@ Run these as parallel subagents. Each one returns a compact ranked candidate lis
 - **Public leaderboards:** for every entry that is not a plain baseline, find its paper, repo or adapter. When the page won't render, benchmark adapter repos often list entries.
 - **Curated lists:** go through the awesome-lists entry by entry, and use existing surveys to cross-check coverage.
 - **Company and lab blogs:** include a post only if it describes a concrete system.
+
+## Agent D: lab, org and hub sweep
+
+- List the 20-30 labs and companies active in the area. For each, check the blog, GitHub org, Hugging Face org and recent model launch pages (launch pages now carry robot and agent benchmark numbers).
+- Sweep Hugging Face datasets and models for the area's tags, sorted by downloads and by likes, several pages deep; sweep GitHub and PyPI for frameworks. Record download and star counts as adoption evidence.
+- Use press coverage to recover X announcements, since X itself usually can't be fetched.
+
+## Agent E: hidden releases and parents
+
+- Go through the area's main model and method papers and record any dataset, benchmark, harness or data engine they release, even when the title doesn't name it.
+- For every candidate that belongs to a larger project, look up the parent project and its sibling releases.
+- List adjacent categories the brief doesn't name and recommend in or out of scope for each.
 
 ## Merge
 

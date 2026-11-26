@@ -33,6 +33,14 @@ A study is only as good as its coverage. The first pass in the original study mi
 4. **Leaderboards and benchmarks:** every entry on the area's public leaderboards; find the paper or repo behind each non-trivial entry.
 5. **Curated lists:** awesome-lists and existing surveys; also use surveys to cross-check coverage.
 6. **Industry posts:** lab and company blog posts that describe a concrete system.
+7. **Lab and org release sweep:** for every major lab and company in the area, check its blog, GitHub org, Hugging Face org and model launch pages for the last 18 months. Launch pages of frontier models now report robot and agent results, and many releases (datasets, frameworks, leaderboards) never get a paper or get one months later.
+8. **Work hidden inside other papers:** datasets, benchmarks and harnesses are often side releases of a model or method paper whose title doesn't name them (e.g. MolmoBot-Data inside a sim-to-real model paper). Go through the area's main model papers and record anything they release.
+9. **Follow parents and siblings:** when a candidate belongs to a larger project (same org, same name prefix, same repo), look up the parent project and its other releases.
+10. **Hubs outside arXiv:** Hugging Face datasets/models sorted by downloads and by likes, GitHub search and stars, PyPI, and X announcements quoted in press. Release counts and download numbers are evidence of adoption.
+
+Citation sweeps must not stop at the first page. Sweep every central hub of the area (the seed, the main benchmarks, the most-cited datasets and systems), not just 2-3 papers, and rank citers by citation count rather than paging by date. OpenAlex does this in one request (`https://api.openalex.org/works?filter=cites:<openalex id>,from_publication_date:<YYYY-MM-DD>&sort=cited_by_count:desc&per-page=200&cursor=*`, following `meta.next_cursor` until it is null); Semantic Scholar throttles heavily.
+
+Before triage, list the adjacent categories the brief does not name (for robot evals, e.g.: embodied reasoning, safety, memory, competitions, evaluation frameworks) and decide explicitly whether each is in scope, so nothing falls out by omission.
 
 For each candidate record: name, org, v1 release date, link, one-line description, headline result with benchmark and protocol, and evidence quality. See `references/search-playbook.md`.
 
@@ -72,7 +80,7 @@ Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<i
 **Figures:**
 - Use 4-5 per page, taken from the arXiv HTML `<img src>` (resolve relative paths), the project page or the repo README.
 - Put the overview figure right after the opening paragraphs, then results charts, method diagrams and real-robot photos between the paragraphs they illustrate.
-- Download them with `curl -sL` and check each is a real image.
+- Download them with `curl -sL` and check each is a real image. If arxiv.org is blocked from the shell, open the image URL in a browser and take an element screenshot instead. When the arXiv HTML hides raster file names, `https://ar5iv.labs.arxiv.org/html/<id>` lists the real asset paths.
 - Crop large white margins with PIL. Flatten onto white first: arXiv figures are often transparent PNGs, and a diff against white misses transparent margins.
   ```python
   from PIL import Image, ImageChops
@@ -89,6 +97,7 @@ Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<i
       im = im.crop((max(l - pad, 0), max(t - pad, 0), min(r + pad, im.width), min(b + pad, im.height)))
   im.save(path)
   ```
+- When a figure has no image file (PDF-only, drawn inline in HTML, or split across several files), crop it from the rendered PDF page instead of dropping it (see `references/notion-notes.md` for a URL-based way).
 - Write every caption as a complete sentence.
 
 ## 6. Assemble the hub
