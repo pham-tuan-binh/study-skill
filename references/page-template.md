@@ -110,26 +110,38 @@ So far <Name> has been tested with <systems, with links and headline scores>.
 
 ## Dataset
 
-The user has not yet given an example for datasets. Until they do, follow the same arc:
+The user's example of the voice:
+
+> A is a large scale dataset, containing X hours of Y data, for Z robot
+>
+> It is aiming to solve B by doing C
+>
+> The data mixture is 1) 2) 3)
+>
+> It has been validated on 1) 2) 3)
+>
+> And the tested baseline is 1) 2) 3)
+>
+> We can use A to blah blah blah
 
 ```markdown
 # <Name> (<Org>)
 
 **Org:** … · **Date:** Mon YYYY · **Paper:** [arXiv:ID](url) · **Data:** [link](url) · **License:** …
 
-<Name> is a dataset for <sub-domain> within <domain>, containing <size: episodes, hours, robots, tasks, modalities>.
+<Name> is a <large scale> dataset, containing <X hours or episodes> of <data type and modalities>, for <robots or embodiments>.
 
-It was collected by <method: teleoperation, simulation, web, autonomous>. <How it compares in size and diversity with the datasets the domain usually uses.>
+![Overview figure caption.](images/01-overview.png)
 
-It is special because 1\) … 2\) …
+It is aiming to solve <problem in the domain> by <collection approach>. <How its size and diversity compare with the datasets the domain usually uses.>
 
-Models trained on it <results, against which baselines and protocol>.
+The data mixture is 1\) … 2\) … 3\) …
 
-But there are still several gaps: 1\) … 2\) …
+It has been validated on 1\) … 2\) … 3\) … <tasks, benchmarks or real robots, with results and protocol>.
 
-To use <Name>, one needs <format, loader, storage, embodiment match>.
+And the tested baselines are 1\) … 2\) … 3\) …
 
-So far <Name> has been used by <papers or models>.
+We can use <Name> to <what it enables for us, and what is required: format, loader, storage, embodiment match>.
 
 # Sources
 ```
