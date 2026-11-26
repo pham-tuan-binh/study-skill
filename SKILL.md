@@ -73,7 +73,7 @@ Each strong paper gets `<slug>/README.md` in the user's narrative format; see `r
 4. **Gaps:** what it cannot solve, and the vectors of improvement, as `1\)`, `2\)` … points, plus how another paper in the study could improve it.
 5. **Reimplementation:** what is worth experimenting with or reimplementing, and what that requires (code, weights, data, hardware, compute).
 
-Use the template that fits the work: method or algorithm, eval or benchmark, or dataset. Every page starts with a metadata line (Org · Date · Paper · Code · Models) and ends with a `# Sources` section.
+Use the template that fits the work: method or algorithm, eval or benchmark, or dataset. Every page starts with a metadata line (Org · Date · Paper · Code · Models) and ends with a `# Retrospective` section followed by `# Sources`.
 
 Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<id>`), the project page and the README. Never invent numbers; say "not reported".
 
@@ -100,13 +100,25 @@ Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<i
 - When a figure has no image file (PDF-only, drawn inline in HTML, or split across several files), crop it from the rendered PDF page instead of dropping it (see `references/notion-notes.md` for a URL-based way).
 - Write every caption as a complete sentence.
 
+## 5b. Write the retrospectives
+
+Write each page's `# Retrospective` only after every page in the study exists, because it judges the paper against the whole field as it stands now. Place it directly before `# Sources`, never on the hub and never as a callout. In 2 to 4 short paragraphs:
+
+1. **Verdict first:** open with *As of Mon YYYY.*, since the verdict goes stale as new work appears. Then: is the work superseded, still the reference for something specific, or current? Say which, plainly ("Mainly of historical interest", "Still the only harness built for distillation", "Current").
+2. **What came after:** name the entries or one-liners in the study that beat or extend it, with the comparison numbers, and flag protocol differences instead of lining up non-comparable numbers.
+3. **What is still worth reading for:** the part that has not been superseded, and any caveats such as unreleased data or self-reported results.
+
+Open with "Since then" only when something really came after; don't use it as a stock opener. Use only numbers already verified on the study's own pages, or verify new ones. Reflect the user's own comments on the page or hub when they exist.
+
+Use the retrospectives to re-triage: work that is fully superseded and has nothing left to read for should be demoted to a one-liner (ask the user before deleting pages), and the hub numbering redone.
+
 ## 6. Assemble the hub
 
 Build `README.md` from `references/hub-template.md`:
 
 1. An intro paragraph saying what the study covers and how many works, plus one bullet per category.
 2. `# <Topic>`, then H2 categories and H3 numbered entries. Each entry has:
-   - the paper page's opening paragraphs, verbatim, up to its first figure;
+   - the paper page's opening paragraphs, verbatim, up to its first figure (never the Retrospective);
    - `Read more: [Title](<slug>/)`, placed before the image so readers don't miss it;
    - the hub figure.
 3. `# Other notable work`: one sentence explaining the list, then chronological bullets `**Name** (Mon YYYY): one line. [arXiv:id](url)`.

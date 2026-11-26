@@ -67,6 +67,14 @@ Furthermore, we can use <Other paper>'s <idea> to <improvement>.
 
 To reimplement <the part worth experimenting with>, one would need <code, weights, data, hardware, compute>, <which of these are released>.
 
+# Retrospective
+
+*As of <Mon YYYY>.* <Verdict first: superseded, still the reference for something specific, or current.>
+
+<What came after: entries or one-liners in the study that beat or extend it, with comparison numbers and protocol caveats.>
+
+<What is still worth reading or reimplementing it for.>
+
 # Sources
 
 - [arXiv:ID](https://arxiv.org/abs/ID) · [Project page](url) · [Code](url)
@@ -106,6 +114,14 @@ But there are still several gaps: 1\) it can't test … 2\) it can be gamed by �
 To use <Name>, one needs to expose <interface: observation and action spaces, API, hardware>. If they already have <supported robot or setup>, they can just <steps>.
 
 So far <Name> has been tested with <systems, with links and headline scores>.
+
+# Retrospective
+
+*As of <Mon YYYY>.* <Verdict first: superseded, still the reference for something specific, or current.>
+
+<What came after: entries or one-liners in the study that beat or extend it, with comparison numbers and protocol caveats.>
+
+<What is still worth reading or reimplementing it for.>
 
 # Sources
 ```
@@ -149,12 +165,31 @@ But there are still several gaps: 1\) … 2\) …
 
 We can use <Name> to <what it enables for us, and what is required: format, loader, storage, embodiment match>.
 
+# Retrospective
+
+*As of <Mon YYYY>.* <Verdict first: superseded, still the reference for something specific, or current.>
+
+<What came after: entries or one-liners in the study that beat or extend it, with comparison numbers and protocol caveats.>
+
+<What is still worth reading or reimplementing it for.>
+
 # Sources
 ```
+
+## Retrospective
+
+Every page ends with a `# Retrospective` section right before `# Sources`, written after the whole study exists. An example of the arc in the user's drafty voice, built from their own comments on MAESTRO:
+
+> As of nov 2026. This is kinda outdated now, it was nov 2025 so expected. Still worth reading for the harness ablation tho, it shows the harness matters more than the tools
+>
+> Since then AMP1 basically does the same thing but lets the model write its own skills, 104/108 real trials, and JustRUA shows a plain harness with good scene geometry goes from 29.7 to 50.3 on RoboDojo with no learned policy
+>
+> The evals are thin (5 trials per setting) and π₀ zero shot isnt a fair baseline, so dont read too much into the numbers
 
 ## Rules
 
 - About 600 to 900 words, with 4 to 5 figures, placed between the paragraphs they illustrate.
-- The opening paragraphs before the first figure become the hub entry, so make them stand alone.
+- The opening paragraphs before the first figure become the hub entry, so make them stand alone. Never put status or successor notes there; they belong in the Retrospective.
+- The Retrospective has 2 to 4 short paragraphs, opening with *As of Mon YYYY.* so readers know when the verdict was made, then verdict first, then successors with numbers, then what is still worth reading for. No callouts.
 - The "Furthermore" paragraph must reference another paper that is in the same study.
 - If the paper's measurement is not how the domain usually measures results, say so in the measurement paragraph, not only in the gaps.

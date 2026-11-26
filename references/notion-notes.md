@@ -16,3 +16,4 @@
 - **Auto-linking:** Notion turns words like `env.py` or `robo.show` into links. Wrap them in code formatting.
 - **Comments:** keep the `<span discussion-urls>` wrappers when rewriting, so the user's comments stay anchored. Check afterwards with `get-comments`.
 - **Callouts and tables:** don't use them. The user dislikes both.
+- **Retrospective:** keep it as a normal `# Retrospective` heading and paragraphs right before `# Sources` on each child page, inserted with `insert_content` anchored before `# Sources`. Hub entries never carry it.

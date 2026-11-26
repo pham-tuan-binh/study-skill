@@ -14,7 +14,7 @@ This is a survey of <N> <works> on <topic>, mostly from <year>, detailing <what 
 
 ### 1. <Name> (<Org>) (Mon YYYY)
 
-<The paper page's opening paragraphs, verbatim, up to its first figure.>
+<The paper page's opening paragraphs, verbatim, up to its first figure. The page's Retrospective stays on the page.>
 
 Read more: [<Name> (<Org>)](<slug>/)
 
