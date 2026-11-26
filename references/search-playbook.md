@@ -6,7 +6,7 @@ Run these as parallel subagents. Each one returns a compact ranked candidate lis
 
 - Read the seed paper's related work and baselines.
 - Pull forward citations of the seed and the 2 or 3 most central papers from Semantic Scholar: `https://api.semanticscholar.org/graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds,abstract&limit=100&offset=0`. Page through the results and back off on HTTP 429.
-- Batch-fetch abstracts for the shortlist (`/paper/batch`).
+- Batch-fetch abstracts for the shortlist (`/paper/batch`, a POST with body `{"ids": [...]}`, not a GET with `?ids=`).
 
 ## Agent B: keyword sweeps
 

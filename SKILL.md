@@ -1,6 +1,6 @@
 ---
 name: study
-description: Run a literature study on a research area (e.g. "do a study on robot evals") and publish it as a public GitHub repo of paper write-ups with figures. Use when the user asks for a study, survey, landscape or deep-dive of papers/systems in a field, starting from a topic or a seed paper. Produces a hub README grouped by category in chronological order, one folder per strong paper (narrative write-up + images), and one-liners with links for weaker work.
+description: Literature study of research papers. Surveys the papers in a research area (e.g. "do a study on robot evals") and publishes them as a public GitHub repo of paper write-ups with figures. Use when the user asks for a literature study, survey, landscape or deep-dive of papers/systems in a field, starting from a topic or a seed paper. Not for studying for an exam or learning a subject. Produces a hub README grouped by category in chronological order, one folder per strong paper (narrative write-up + images), and one-liners with links for weaker work.
 ---
 
 # Study
@@ -19,7 +19,7 @@ Work in this order. Use parallel subagents for research and writing (about two p
 
 ## 1. Scope
 
-Identify the topic, any seed paper the user gave, and the repo name (default: kebab-case of the topic, e.g. `robot-eval-study`). Proceed with sensible defaults; ask only if the area is genuinely ambiguous.
+Identify the topic, any seed paper the user gave, and the repo name (default: kebab-case of the topic, e.g. `robot-eval-study`). Proceed with sensible defaults; ask only if the area is genuinely ambiguous. (Step 3 still requires a check-in on the shortlist, and step 8 a confirmation before publishing.)
 
 If a seed paper is given, read it fully first (PDF via `pdftotext`, or the arXiv HTML) and note its related-work list, benchmarks and baselines. These become the first candidates.
 
@@ -28,7 +28,7 @@ If a seed paper is given, read it fully first (PDF via `pdftotext`, or the arXiv
 A study is only as good as its coverage. The first pass in the original study missed most of the field, so always run all of these, in parallel:
 
 1. **Seed references:** every system the seed paper compares against or cites as related work.
-2. **Forward citations:** papers citing the seed and the 2-3 most central papers, via the Semantic Scholar API (`https://api.semanticscholar.org/graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds&limit=100`, page with `offset`).
+2. **Forward citations:** papers citing the seed and the 2-3 most central papers, via the Semantic Scholar API (`https://api.semanticscholar.org/graph/v1/paper/arXiv:<id>/citations?fields=title,year,externalIds&limit=100`, page with `offset`). To fetch abstracts for many papers at once, `/paper/batch` is a **POST**, not a GET: `curl -s -X POST 'https://api.semanticscholar.org/graph/v1/paper/batch?fields=title,year,abstract,externalIds' -H 'Content-Type: application/json' -d '{"ids":["arXiv:2401.01234","arXiv:2402.05678"]}'` (up to 500 ids). Passing `?ids=` returns an error.
 3. **Keyword sweeps:** arXiv and web searches over the area's vocabulary for the last 12-18 months.
 4. **Leaderboards and benchmarks:** every entry on the area's public leaderboards; find the paper or repo behind each non-trivial entry.
 5. **Curated lists:** awesome-lists and existing surveys; also use surveys to cross-check coverage.
@@ -45,6 +45,8 @@ Only comparatively strong work gets a full page. Everything else gets a one-line
 
 Verify every headline number against the paper's full text before writing. Flag numbers measured on non-comparable protocols (self-evaluated subsets, privileged state, practice runs, demos, larger budgets) instead of putting them side by side.
 
+**Stop and check in with the user here.** Show the ranked shortlist, one line per item (name, date, headline result, strong/weak call), and let them decide which papers get full pages before writing any. This is the most expensive step to get wrong, so do not skip it even when running with defaults.
+
 ## 4. Categorize
 
 Derive categories from how the current field describes itself, using the terms recent papers and surveys use, not from the seed paper's framing. Re-check categories whenever the set changes. A category with one item, or one that mixes clearly different designs, is a sign the scheme is out of date. Put controlled studies and benchmarks in their own category.
@@ -55,16 +57,15 @@ The comparison must be fair. No paper, including the seed or the user's favourit
 
 ## 5. Write the paper pages
 
-Each strong paper gets `<slug>/README.md` in the user's narrative format; see `references/writing-style.md` and `references/page-template.md`. In short:
+Each strong paper gets `<slug>/README.md` in the user's narrative format; see `references/writing-style.md` and `references/page-template.md`. Every page answers the user's five reading questions, critically, as storytelling paragraphs (not Q&A):
 
-1. A metadata line: Org · Date · Paper · Code · Models.
-2. Then storytelling paragraphs, in order:
-   1. the problem it solves;
-   2. how it measures success, and the results against its baselines;
-   3. how it works;
-   4. the remaining gaps, as `1\)`, `2\)` … points;
-   5. what to explore next, plus how another paper in the study could improve it.
-3. A `# Sources` section.
+1. **Domain:** what domain or sub-domain it solves (name both when it is a sub-domain).
+2. **Measurement:** how it measures results, what they are, and whether that is how the domain usually measures them. A non-standard metric or self-made benchmark is how you spot a weak paper; say so.
+3. **Method:** how it achieves the results, and what is actually novel.
+4. **Gaps:** what it cannot solve, and the vectors of improvement, as `1\)`, `2\)` … points, plus how another paper in the study could improve it.
+5. **Reimplementation:** what is worth experimenting with or reimplementing, and what that requires (code, weights, data, hardware, compute).
+
+Use the template that fits the work: method or algorithm, eval or benchmark, or dataset. Every page starts with a metadata line (Org · Date · Paper · Code · Models) and ends with a `# Sources` section.
 
 Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<id>`), the project page and the README. Never invent numbers; say "not reported".
 
@@ -72,7 +73,22 @@ Research each paper from the full text (arXiv HTML at `https://arxiv.org/html/<i
 - Use 4-5 per page, taken from the arXiv HTML `<img src>` (resolve relative paths), the project page or the repo README.
 - Put the overview figure right after the opening paragraphs, then results charts, method diagrams and real-robot photos between the paragraphs they illustrate.
 - Download them with `curl -sL` and check each is a real image.
-- Crop large white margins with PIL (`ImageChops.difference` against white, then `getbbox`, plus about 20 px of padding).
+- Crop large white margins with PIL. Flatten onto white first: arXiv figures are often transparent PNGs, and a diff against white misses transparent margins.
+  ```python
+  from PIL import Image, ImageChops
+  im = Image.open(path)
+  if im.mode in ("RGBA", "LA", "P"):
+      im = im.convert("RGBA")
+      bg = Image.new("RGBA", im.size, (255, 255, 255, 255))
+      im = Image.alpha_composite(bg, im)
+  im = im.convert("RGB")
+  bbox = ImageChops.difference(im, Image.new("RGB", im.size, "white")).getbbox()
+  if bbox:
+      pad = 20
+      l, t, r, b = bbox
+      im = im.crop((max(l - pad, 0), max(t - pad, 0), min(r + pad, im.width), min(b + pad, im.height)))
+  im.save(path)
+  ```
 - Write every caption as a complete sentence.
 
 ## 6. Assemble the hub
@@ -99,6 +115,8 @@ Keep the user's own opinions only if they are about the papers.
 
 ## 8. Publish
 
+Check that every image path and folder link in the READMEs resolves (a small Python check over `![...](...)` and `](<slug>/)` links). Then **confirm with the user before pushing**: show the repo name, owner, that it will be public, and the privacy-scrub hits you removed. The scrub relies on grep and can miss things; publishing is hard to undo.
+
 ```bash
 cd <study-dir>
 git init -b main && git add -A && git commit -m "Add <topic> study"
@@ -106,7 +124,7 @@ gh repo create <owner>/<study-name> --public --source . --push \
   --description "<one-line description>"
 ```
 
-Check that every image path and folder link in the READMEs resolves (a small Python check over `![...](...)` and `](<slug>/)` links) before pushing. Report the repo URL, the counts (full pages, one-liners, figures) and any unverified claims.
+After pushing, report the repo URL, the counts (full pages, one-liners, figures) and any unverified claims.
 
 ## Optional: Notion mirror
 
