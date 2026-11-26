@@ -14,19 +14,21 @@ Pages are written as paragraphs in a storytelling manner, not as a Q&A. Pick the
 
 ## Method or algorithm
 
-The user's example of the voice:
+The user's example of the arc, in their own drafty voice. It shows the order and the kind of content for each paragraph; the finished page is written in polished prose per `writing-style.md`.
 
-> Paper A is solving full body tracking for humanoid robots.
+> Paper A is solving whole body tracking for humanoid robots, which is a sub domain of humanoid control
 >
-> It measures success by calculating the delta between a given pose and the humanoid pose in real life. On this benchmark, it performs X better than the trailing policy.
+> It measures success by the delta between the reference pose and the robot pose in real life (mpjpe). This is pretty standard for tracking papers so numbers are kinda comparable. On this benchmark it does like 30% better than the trailing policy
 >
-> It does this by training a RL policy with a differentiable world model.
+> It does this by training a RL policy with a differentiable world model instead of a normal physics sim. The novel part is backproping through the world model so it learns faster, the rest is mostly from prior work
 >
-> While it performs well, there are still several gaps, like: 1) it measures the wrong metric 2) etc
+> While it performs well, there are still several gaps, like: 1) mpjpe doesnt tell u if the motion is stable or just looks close 2) only tested on one robot etc
 >
-> If we want to improve on this paper, we might want to look into: 1) replacing the physics training for the diff world model because X and Y
+> If we want to improve on this paper, we might want to look into: 1) replacing the diff world model with physics training for the hard contact parts because the world model drifts there 2) testing on more robots etc
 >
-> Furthermore, we can use paper B's idea in this paper to improve.
+> Furthermore, we can use paper B's motion retargeting in this paper to get more diverse reference motions
+>
+> To reimplement this, we need their code (released) and a humanoid like g1, plus a few gpus for training. weights arent out so have to train from scratch
 
 ```markdown
 # <Name> (<Org>)
@@ -72,19 +74,19 @@ To reimplement <the part worth experimenting with>, one would need <code, weight
 
 ## Eval or benchmark
 
-The user's example of the voice:
+The user's example of the arc, in their own drafty voice. It shows the order and the kind of content for each paragraph; the finished page is written in polished prose per `writing-style.md`.
 
-> X is a real eval for robots, covering X types of robots (links to them)
+> X is a real eval for robots, covering like 4 types of robots (franka, ur5, aloha, so100) across a few labs
 >
-> It measures the following metric: 1) 2) 3)
+> It measures the following metric: 1) success rate per task 2) progress score for partial completion etc
 >
-> It is special because 1) 2) 3)
+> It is special because 1) its real robot not sim so no sim2real gap 2) anyone can submit a policy remotely and it runs on their hardware etc
 >
-> But there are still several gaps: 1) it can't test 2) it can be easily hacked
+> But there are still several gaps: 1) it cant test long horizon stuff, most tasks are under a minute 2) it can be easily hacked if u overfit to the fixed scenes etc
 >
-> To use X, one need to do expose a standard interface for Y Z. If they already have the robot that X support, they can just F Y Z
+> To use X, one need to expose a standard interface for obs and actions (like a policy server that takes images + proprio and returns joint actions). If they already have a robot that X support, they can just plug in the server and run the eval script
 >
-> So far X has been tested with M N O P
+> So far X has been tested with pi0, openvla, octo etc
 
 ```markdown
 # <Name> (<Org>)
@@ -110,19 +112,21 @@ So far <Name> has been tested with <systems, with links and headline scores>.
 
 ## Dataset
 
-The user's example of the voice:
+The user's example of the arc, in their own drafty voice. It shows the order and the kind of content for each paragraph; the finished page is written in polished prose per `writing-style.md`.
 
-> A is a large scale dataset, containing X hours of Y data, for Z robot
+> A is a large scale dataset, containing X hours of teleop data, for Z robots (mostly franka, some aloha and mobile ones)
 >
-> It is aiming to solve B by doing C
+> It is aiming to solve the lack of diverse real world data for generalist policies by doing crowdsourced teleop across a bunch of labs with the same setup. It's like K times bigger than D which is what most papers train on rn
 >
-> The data mixture is 1) 2) 3)
+> The data mixture is 1) tabletop single arm stuff, most of it 2) bimanual 3) some mobile manipulation in homes. all have rgb, proprio and language
 >
-> It has been validated on 1) 2) 3)
+> It has been validated on 1) E sim benchmark, goes from S1% to S2% 2) real robot on F unseen tasks 3) zero shot on G which isnt in the data
 >
-> And the tested baseline is 1) 2) 3)
+> And the tested baseline is 1) H trained on D 2) same model but without the mobile data 3) I finetuned on A
 >
-> We can use A to blah blah blah
+> But there are still gaps: 1) its mostly one robot so the cross embodiment claim is kinda weak 2) success labels are self labelled so hard to filter bad demos
+>
+> We can use A to pretrain before finetuning on our arm. need to convert from rlds, like T TB of storage, and map the action space to ours
 
 ```markdown
 # <Name> (<Org>)
@@ -140,6 +144,8 @@ The data mixture is 1\) … 2\) … 3\) …
 It has been validated on 1\) … 2\) … 3\) … <tasks, benchmarks or real robots, with results and protocol>.
 
 And the tested baselines are 1\) … 2\) … 3\) …
+
+But there are still several gaps: 1\) … 2\) …
 
 We can use <Name> to <what it enables for us, and what is required: format, loader, storage, embodiment match>.
 
